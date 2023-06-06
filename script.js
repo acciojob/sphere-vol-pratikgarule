@@ -1,19 +1,78 @@
-//vol = (4/3)(pi)r^3
+let radius = document.getElementById("radius");
+let result = document.getElementById("result");
+let myCanvas = document.getElementById("myCanvas");
+let painter = myCanvas.getContext("2d");
+let temp = 0;
+let x = myCanvas.width / 2;
+let y = myCanvas.height / 2;
 
-submit.onclick = volumeCalc; 
+function autoDraw() {
 
-function volumeCalc() {
-	var radius = document.getElementById("radius").value; 
-	var volume = (4/3)*Math.PI*Math.pow(radius, 3);
-	if (isNaN(radius)) {
-		document.getElementById("calc").innerHTML = "Volume:";
-		document.getElementById("incorrect").innerHTML = "Please enter a positive number.";
-	} else if (radius < 0) {
-		document.getElementById("calc").innerHTML = "Volume:";
-		document.getElementById("incorrect").innerHTML = "Please enter a positive number.";
-	} else {
-	document.getElementById("calc").innerHTML = "Volume: " + volume.toFixed(2);
-	document.getElementById("incorrect").innerHTML = "";
-	}
-	// console.log(volume);
+
+    if (temp < 250) {
+        painter.beginPath();
+        painter.strokeStyle = "white";
+        painter.arc(x, y, temp, 0, 2 * Math.PI);
+        painter.stroke();
+        temp++;
+    }
+    else {
+        clearInterval(timer);
+        temp = 0;
+    }
+}
+let timer = setInterval(autoDraw, 100);
+
+
+
+
+function calculate() {
+    let sphereVolume = 0;
+    clearInterval(timer);
+    let valCheck = validation();
+    if (valCheck) {
+        sphereVolume = (4 * Math.PI * Number(radius.value) ** 3) / 3;
+        result.innerText = `The volume is : ${sphereVolume.toFixed(2)}`;
+        drawCircle();
+
+    }
+}
+
+
+function validation() {
+    let r = Number(radius.value)
+    if (r > 0) {
+
+        if (x - r > 0 && y - r > 0 && x + r < myCanvas.width && y + r < myCanvas.height) {
+
+
+            return true
+        }
+
+        else {
+            alert(`Radius validation - size restriction (lower than 250)`);
+        }
+
+    }
+
+    else {
+        alert(`Invalid radius - radius cant be null or negative`);
+    }
+
+}
+
+
+function drawCircle() {
+    painter.beginPath();
+    painter.strokeStyle = "white";
+    painter.arc(x, y, Number(radius.value), 0, 2 * Math.PI);
+    painter.stroke();
+}
+
+
+function clearCanvas() {
+    clearInterval(timer);
+    painter.beginPath();
+    painter.clearRect(0, 0, 500, 500)
+    painter.stroke();
 }
